@@ -1,3 +1,4 @@
+import styles from './APOD.module.css'
 import React, { Component } from 'react'
 
 export class APOD extends Component {
@@ -46,10 +47,18 @@ export class APOD extends Component {
 
     render() {
         return (
-            <div>
-                
+          <div className={styles.container}>
+            <img src={this.state.url} alt={this.state.title} />
+            <div className={styles.date}>{this.state.date}</div>
+            <div className={styles.title}>{this.state.title}</div>
+            <div className={styles.copywright}>
+              <span>Copywright: </span>{this.state.copyright}
             </div>
-        )
+            <div className={styles.explanation}>
+              <span>Explanation: </span>{this.state.explanation}
+            </div>
+          </div>
+        );
     }
 }
 
