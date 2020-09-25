@@ -52,10 +52,12 @@ export class APOD extends Component {
             <div className={styles.date}>{this.state.date}</div>
             <div className={styles.title}>{this.state.title}</div>
             <div className={styles.copywright}>
-              <span>Copywright: </span>{this.state.copyright}
+              <span>Copywright: </span>
+              {this.state.copyright}
             </div>
             <div className={styles.explanation}>
-              <span>Explanation: </span>{this.state.explanation}
+              <span>Explanation: </span>
+              {this.state.explanation}
             </div>
           </div>
         );
