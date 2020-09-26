@@ -25,3 +25,8 @@
 .explanation span {
     font-weight: bold;
 }
+
+.errormsg {
+    font-weight: bold;
+    font-size: 2vw;
+}

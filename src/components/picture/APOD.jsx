@@ -12,14 +12,22 @@ export class APOD extends Component {
             hdurl: null,
             title: null,
             url: null,
+            errormsg: null
         };
-
-        this.fetchAPOD = this.fetchAPOD.bind(this)
     };
 
     async componentDidMount() {
         const data = await this.fetchAPOD()
-        if(!data.error) {
+        console.log(data, data);
+        if(data.error !== undefined) {
+            this.setState({
+                errormsg: data.error.message
+            })
+        } else if(data.code === 404) {
+            this.setState({
+                errormsg: data.msg
+            })
+        } else {
             this.setState({
                 copyright: data.copyright,
                 date: data.date,
@@ -27,13 +35,11 @@ export class APOD extends Component {
                 hdurl: data.hdurl,
                 title: data.title,
                 url: data.url
-            })    
-        } else {
-            console.log(data.error)
+            })
         }
     }
 
-    async fetchAPOD() {
+    fetchAPOD = async () => {
         try {
             const url = process.env.REACT_APP_NASA_APOD_URL
             const apikey = process.env.REACT_APP_NASA_API_KEY
@@ -48,17 +54,23 @@ export class APOD extends Component {
     render() {
         return (
           <div className={styles.container}>
-            <img src={this.state.url} alt={this.state.title} />
-            <div className={styles.date}>{this.state.date}</div>
-            <div className={styles.title}>{this.state.title}</div>
-            <div className={styles.copywright}>
-              <span>Copywright: </span>
-              {this.state.copyright}
-            </div>
-            <div className={styles.explanation}>
-              <span>Explanation: </span>
-              {this.state.explanation}
-            </div>
+            {this.state.errormsg === null ? (
+              <>
+                <img src={this.state.url} alt={this.state.title} />
+                <div className={styles.date}>{this.state.date}</div>
+                <div className={styles.title}>{this.state.title}</div>
+                <div className={styles.copywright}>
+                  <span>Copywright: </span>
+                  {this.state.copyright}
+                </div>
+                <div className={styles.explanation}>
+                  <span>Explanation: </span>
+                  {this.state.explanation}
+                </div>
+              </>
+            ) : (
+              <div className={styles.errormsg}>{this.state.errormsg}</div>
+            )}
           </div>
         );
     }
