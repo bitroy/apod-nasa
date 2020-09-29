@@ -2,6 +2,7 @@ import "react-calendar/dist/Calendar.css";
 import styles from "./APOD.module.css";
 import React, { Component } from "react";
 import DatePicker from "react-date-picker";
+import { isImageURL } from "../../utils/imageurl";
 
 export class APOD extends Component {
   constructor() {
@@ -23,7 +24,7 @@ export class APOD extends Component {
     this.fetchAPOD();
   }
 
-  fetchAPOD = async ( queryparam = "" ) => {
+  fetchAPOD = async (queryparam = "") => {
     try {
       const url = process.env.REACT_APP_NASA_APOD_URL;
       const apikey = process.env.REACT_APP_NASA_API_KEY;
@@ -40,17 +41,15 @@ export class APOD extends Component {
           url: data.url,
         });
       } else if (data.error !== undefined) {
-      	this.setState({
-      		errormsg: data.error.message,
-      	});
+        this.setState({
+          errormsg: data.error.message,
+        });
       } else if (data.code !== undefined) {
-      	this.setState({
-      		errormsg: data.msg,
+        this.setState({
+          errormsg: data.msg,
         });
       }
-    } catch (error) {
-
-    }
+    } catch (error) {}
   };
 
   showHDImage = () => {
@@ -60,11 +59,67 @@ export class APOD extends Component {
   };
 
   fetchAPODOnDate = async (date) => {
-    const month = parseInt(date.getMonth()) + 1;    
+    const month = parseInt(date.getMonth()) + 1;
     const userdate = `${date.getFullYear()}-${month}-${date.getDate()}`;
-    console.log(userdate);
     const queryparam = `&date=${userdate}`;
     this.fetchAPOD(queryparam);
+  };
+
+  showButton = (url) => {
+    if (url !== null) {
+      if (isImageURL(url)) {
+        if (this.state.showhd) {
+          return (
+            <button
+              className={styles.showhdimagebtn}
+              onClick={this.showHDImage}
+            >
+              Show Plain Image
+            </button>
+          );
+        } else {
+          return (
+            <button
+              className={styles.showhdimagebtn}
+              onClick={this.showHDImage}
+            >
+              Show HD Image
+            </button>
+          );
+        }
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  };
+
+  showURLImage = (url) => {
+    if (url !== null) {
+      if (isImageURL(url)) {
+        return (
+          <img
+            src={url}
+            alt={this.state.title}
+            loading="lazy"
+            data-testid="apod-image"
+          />
+        );
+      } else {
+        return (
+          <iframe
+            src={url}
+            title={this.state.title}
+            loading="lazy"
+            width="600"
+            height="400"
+          ></iframe>
+        );
+      }
+    } else {
+      return <div></div>;
+    }
   };
 
   render() {
@@ -76,38 +131,14 @@ export class APOD extends Component {
               <DatePicker
                 clearIcon={null}
                 format="yyyy-MM-dd"
-                onChange={this.fetchAPODOnDate} 
-                value={this.state.date ? new Date(this.state.date) : new Date()} 
+                onChange={this.fetchAPODOnDate}
+                value={this.state.date ? new Date(this.state.date) : new Date()}
               />
-              {this.state.showhd ? (
-                <button
-                  className={styles.showhdimagebtn}
-                  onClick={this.showHDImage}
-                >
-                  Show Plain Image
-                </button>
-              ) : (
-                <button
-                  className={styles.showhdimagebtn}
-                  onClick={this.showHDImage}
-                >
-                  Show HD Image
-                </button>
-              )}
+              {this.showButton(this.state.url)}
             </div>
-            {this.state.showhd ? (
-              <img
-                src={this.state.hdurl}
-                alt={this.state.title}
-                data-testid="apod-image"
-              />
-            ) : (
-              <img
-                src={this.state.url}
-                alt={this.state.title}
-                data-testid="apod-image"
-              />
-            )}
+            {this.state.showhd
+              ? this.showURLImage(this.state.hdurl)
+              : this.showURLImage(this.state.url)}
             <div className={styles.date} data-testid="apod-date">
               {this.state.date}
             </div>
