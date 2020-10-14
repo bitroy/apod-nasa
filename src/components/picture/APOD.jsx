@@ -58,7 +58,7 @@ export class APOD extends Component {
     });
   };
 
-  fetchAPODOnDate = async (date) => {
+  fetchAPODOnDate = (date) => {
     const month = parseInt(date.getMonth()) + 1;
     const userdate = `${date.getFullYear()}-${month}-${date.getDate()}`;
     const queryparam = `&date=${userdate}`;
@@ -131,6 +131,8 @@ export class APOD extends Component {
               <DatePicker
                 clearIcon={null}
                 format="yyyy-MM-dd"
+                minDate={new Date("Jun 16, 1995")}
+                maxDate={new Date()}
                 onChange={this.fetchAPODOnDate}
                 value={this.state.date ? new Date(this.state.date) : new Date()}
               />
@@ -145,10 +147,12 @@ export class APOD extends Component {
             <div className={styles.title} data-testid="apod-title">
               {this.state.title}
             </div>
-            <div className={styles.copywright} data-testid="apod-copywright">
-              <span>Copywright: </span>
-              {this.state.copyright}
-            </div>
+            {this.state.copyright ? (
+              <div className={styles.copywright} data-testid="apod-copywright">
+                <span>Copywright: </span>
+                {this.state.copyright}
+              </div>
+            ) : null}
             <div className={styles.explanation} data-testid="apod-explanation">
               <span>Explanation: </span>
               {this.state.explanation}

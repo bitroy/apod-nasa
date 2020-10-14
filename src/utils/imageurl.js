@@ -5,6 +5,8 @@ export const isImageURL = (url) => {
       return true;
     case "png":
       return true;
+    case "gif":
+      return true;
     default:
       return false;
   }

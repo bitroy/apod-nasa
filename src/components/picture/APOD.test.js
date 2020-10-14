@@ -45,15 +45,18 @@ describe("Not Showing Astromomy Picture of the Day", () => {
   mockServer.use(
     rest.get("https://api.nasa.gov/planetary/apod"),
     (req, res, ctx) => {
-      return res(ctx.status(404), ctx.json({
-        data: {
-          code: 404,
-          msg: "Not Found!!"
-        }
-      }));
+      return res(
+        ctx.status(404),
+        ctx.json({
+          data: {
+            code: 404,
+            msg: "Not Found!!",
+          },
+        })
+      );
     }
   );
-  
+
   test("Verify Valid Elements Shown", async () => {
     render(<APOD />);
     expect(screen.queryByTestId("apod-image")).not.toBeInTheDocument();
